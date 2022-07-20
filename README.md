@@ -1,5 +1,7 @@
 # Open Telemetry Trace Exporter Action
 
+**NOTE**: This action is a forked version of [otel-export-trace-action](https://github.com/marketplace/actions//README.md).
+
 This action will export GitHub Workflow telemetry data using OTLP to a configurable endpoint.
 
 ## Usage
@@ -20,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Export Workflow Trace
-        uses: inception-health/otel-export-trace-action@latest
+        uses: elastic/otel-export-trace-action@latest
         with:
-          otlpEndpoint: grpc://api.honeycomb.io:443/
+          otlpEndpoint: ${{ secrets.OTLP_ENDPOINT }}
           otlpHeaders: ${{ secrets.OTLP_HEADERS }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           runId: ${{ github.event.workflow_run.id }}
@@ -47,16 +49,16 @@ jobs:
     needs: [build] # must run when all jobs are complete
     steps:
       - name: Export Workflow Trace
-        uses: inception-health/otel-export-trace-action@latest
+        uses: elastic/otel-export-trace-action@latest
         with:
-          otlpEndpoint: grpc://api.honeycomb.io:443/
+          otlpEndpoint: ${{ secrets.OTLP_ENDPOINT }}
           otlpHeaders: ${{ secrets.OTLP_HEADERS }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### With Junit Tracing
 
-Combined with [OpenTelemetry Upload Trace Artifact](https://github.com/marketplace/actions/opentelemetry-upload-trace-artifact) this action will Download the OTLP Trace Log Artifact uploaded from the Workflow Run and export it.
+Combined with [OpenTelemetry Upload Trace Artifact](https://github.com/elastic/otel-upload-test-artifact-action) this action will Download the OTLP Trace Log Artifact uploaded from the Workflow Run and export it.
 
 _pr-workflow.yml_
 
@@ -77,8 +79,9 @@ jobs:
         run: npm ci --ignore-scripts
       - name: run tests
         run: npm run test:ci
-      - uses: inception-health/otel-upload-test-artifact-action@v1
+      - uses: elastic/otel-upload-test-artifact-action@latest
         if: always()
+        continue-on-error: true
         with:
           jobName: "build-and-test"
           stepName: "run tests"
@@ -103,9 +106,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Export Workflow Trace
-        uses: inception-health/otel-export-trace-action@latest
+        uses: elastic/otel-export-trace-action@latest
         with:
-          otlpEndpoint: grpc://api.honeycomb.io:443/
+          otlpEndpoint: ${{ secrets.OTLP_ENDPOINT }}
           otlpHeaders: ${{ secrets.OTLP_HEADERS }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           runId: ${{ github.event.workflow_run.id }}
@@ -168,9 +171,9 @@ jobs:
 | github.job.step.started_at   | string  | Github Step Run started_at                        |
 | github.job.step.completed_at | string  | Github Step Run completed_at                      |
 
-## Honeycomb Example Trace
+## Elastic Example Trace
 
-![HoneyComb Example](./docs/honeycomb-example.png)
+![Elastic Example](./docs/elastic-example.png)
 
 _with junit traces_
-![HoneyComb Junit Example](./docs/honeycomb-junit-example.png)
+![Elastic JUnit Example](./docs/elastic-junit-example.png)
