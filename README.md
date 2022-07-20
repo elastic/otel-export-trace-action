@@ -1,6 +1,6 @@
 # Open Telemetry Trace Exporter Action
 
-**NOTE**: This action is a forked version of [otel-export-trace-action](https://github.com/marketplace/actions//README.md).
+**NOTE**: This action is a forked version of [otel-export-trace-action](https://github.com/inception-health/otel-export-trace-action).
 
 This action will export GitHub Workflow telemetry data using OTLP to a configurable endpoint.
 
